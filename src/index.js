@@ -25,6 +25,8 @@ bunyan.create = function (category, options) {
         name: category,
         category: category,
         serializers: {
+            req: bunyan.stdSerializers.req,
+            res: bunyan.stdSerializers.res,
             err: function (error) {
 
                 if (typeof error.getFullStack === 'function') {
