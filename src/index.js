@@ -17,6 +17,17 @@ var getLogger = function (category, options, simple) {
     return child;
 };
 
+function getFullErrorStack (ex) {
+    var ret = ex.stack || ex.toString();
+    if (ex.cause && typeof (ex.cause) === 'function') {
+        var cex = ex.cause();
+        if (cex) {
+            ret += '\nCaused by: ' + getFullErrorStack(cex);
+        }
+    }
+    return (ret);
+}
+
 bunyan.getLogger = getLogger;
 
 bunyan.create = function (category, options) {
@@ -26,14 +37,50 @@ bunyan.create = function (category, options) {
         category: category,
         serializers: {
             req: bunyan.stdSerializers.req,
-            res: bunyan.stdSerializers.res,
-            err: function (error) {
 
-                if (typeof error.getFullStack === 'function') {
-                    error.stack = error.getFullStack();
+            // res: function (res) {
+            //     if (!res || !res.statusCode) {
+            //         return res;
+            //     } else {
+            //         return {
+            //             statusCode: res.statusCode,
+            //             header: res._header,
+            //             body: res.body
+            //         };
+            //     }
+            // },
+
+            res: bunyan.stdSerializers.res,
+
+            err: function (err) {
+                if (!err || !err.stack) {
+                    return err;
                 }
 
-                return bunyan.stdSerializers.err(error);
+
+                if (typeof err.getFullStack === 'function') {
+                    err.stack = err.getFullStack();
+                }
+
+                var obj = {
+                    message: err.message,
+                    name: err.name,
+                    stack: getFullErrorStack(err),
+                    code: err.code,
+                    signal: err.signal
+                };
+
+                if (err.details) {
+                    obj.details = err.details;
+                }
+
+                if (err.list) {
+                    obj.list = err.list;
+                }
+
+                return obj;
+
+                // return bunyan.stdSerializers.err(error);
 
             }
         }
