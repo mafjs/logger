@@ -37,19 +37,6 @@ bunyan.create = function (category, options) {
         category: category,
         serializers: {
             req: bunyan.stdSerializers.req,
-
-            // res: function (res) {
-            //     if (!res || !res.statusCode) {
-            //         return res;
-            //     } else {
-            //         return {
-            //             statusCode: res.statusCode,
-            //             header: res._header,
-            //             body: res.body
-            //         };
-            //     }
-            // },
-
             res: bunyan.stdSerializers.res,
 
             err: function (err) {
@@ -90,6 +77,20 @@ bunyan.create = function (category, options) {
     options = options || {};
 
     options = Object.assign(options, baseOptions);
+
+    if (options.logResponseBody) {
+        options.serializers.res = function (res) {
+            if (!res || !res.statusCode) {
+                return res;
+            } else {
+                return {
+                    statusCode: res.statusCode,
+                    header: res._header,
+                    body: res.body
+                };
+            }
+        };
+    }
 
     var logger = bunyan.createLogger(options);
 
