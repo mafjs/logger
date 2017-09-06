@@ -79,6 +79,7 @@ bunyan.create = function (category, options) {
     options = Object.assign(options, baseOptions);
 
     if (options.logResponseBody) {
+        delete options.logResponseBody;
         options.serializers.res = function (res) {
             if (!res || !res.statusCode) {
                 return res;
