@@ -41,7 +41,7 @@
     "babel-eslint": "^8.0.0",
     "babel-plugin-istanbul": "^4.1.5",
     "babel-preset-es2015": "^6.24.1",
-    "coveralls": "^2.13.1",
+    "coveralls": "^2.13.2",
     "eslint": "^4.7.2",
     "in-publish": "^2.0.0",
     "maf-error": "^1.2.0",
