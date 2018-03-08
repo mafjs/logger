@@ -46,7 +46,7 @@
     "in-publish": "^2.0.0",
     "maf-error": "^1.2.0",
     "proxyquire": "^1.8.0",
-    "tap": "^10.7.2"
+    "tap": "^11.1.2"
   },
   "dependencies": {
     "bunyan": "^1.8.12"
